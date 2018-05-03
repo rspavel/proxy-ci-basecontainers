@@ -1,0 +1,14 @@
+FROM fedora:latest
+
+RUN yum update -y
+RUN yum install -y make gcc cmake git mercurial graphviz gnupg2 R perl perl-devel openmpi openmpi-devel
+RUN yum install -y patch bzip2*
+RUN ln -s /usr/include/openmpi-x86_64 /usr/lib64/openmpi/include
+
+RUN useradd -m ci
+
+RUN rm -rf /home/ci/.ccache
+COPY ccache/ /home/ci/.ccache
+USER root
+RUN chown -R ci:ci /home/ci/.ccache
+USER ci
