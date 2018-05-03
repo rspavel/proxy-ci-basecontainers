@@ -8,6 +8,7 @@ services:
 env:
   matrix:
     - DISTRO=fedora DOCKERHUB=true
+    - DISTRO=centos7 DOCKERHUB=true
 #    - DISTRO=ubuntu DOCKERHUB=true
 
 script:

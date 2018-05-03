@@ -1,0 +1,30 @@
+FROM centos:centos7
+
+RUN yum update -y
+RUN yum install -y centos-release-scl
+RUN yum --enablerepo=centos-sclo-rh-testing -y install devtoolset-7-gcc*
+RUN yum install -y perl perl-devel make epel-release cmake git mercurial graphviz gnupg2 R patch bzip2* unzip perl-Data-Dumper perl-Thread-Queue python python-devel
+
+WORKDIR /ompi
+ADD https://www.open-mpi.org/software/ompi/v3.0/downloads/openmpi-3.0.1.tar.gz /ompi/
+RUN tar xzvf openmpi-3.0.1.tar.gz
+WORKDIR /ompi/openmpi-3.0.1
+RUN scl enable devtoolset-7 './configure --prefix=/ompi/install'
+RUN scl enable devtoolset-7 'make all install'
+WORKDIR /boost
+ADD https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.tar.gz /boost/
+RUN tar xzvf boost_1_67_0.tar.gz
+WORKDIR /boost/boost_1_67_0
+RUN scl enable devtoolset-7 './bootstrap.sh --prefix=/boost/install'
+RUN scl enable devtoolset-7 './b2 install'
+WORKDIR /openblas
+ADD http://github.com/xianyi/OpenBLAS/archive/v0.2.20.tar.gz /openblas/
+RUN tar xzvf v0.2.20.tar.gz
+WORKDIR /openblas/OpenBLAS-0.2.20
+RUN scl enable devtoolset-7 'make all install PREFIX=/openblas/install'
+WORKDIR /fftw
+ADD http://www.fftw.org/fftw-3.3.7.tar.gz /fftw/
+RUN tar xzvf fftw-3.3.7.tar.gz
+WORKDIR /fftw/fftw-3.3.7
+RUN scl enable devtoolset-7 './configure --prefix=/fftw/install'
+RUN scl enable devtoolset-7 'make all install'
